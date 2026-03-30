@@ -9,7 +9,7 @@
     <!-- 引入官方替代字体 -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@700&family=Roboto+Slab:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@100..900&family=Roboto+Slab:wght@100..900&display=swap" rel="stylesheet">
     
     <style>
         :root {
@@ -147,10 +147,53 @@
         #toast-container { position: fixed; top: 10%; left: 50%; transform: translateX(-50%); z-index: 1000; display: flex; flex-direction: column; align-items: center; pointer-events: none; width: 100%; }
         .toast { background-color: var(--text); color: var(--bg); padding: 12px 18px; border-radius: 4px; font-family: 'Libre Franklin', sans-serif; font-weight: 700; margin-bottom: 10px; width: fit-content; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.3); opacity: 1; transition: opacity 0.4s ease; }
         #loading { position: absolute; top: 50%; font-weight: 700; }
+
+        #start-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: #e3e3e1; /* 官网米灰色 */
+            color: #000000; z-index: 1000;
+            display: flex; justify-content: center; align-items: center;
+            transition: opacity 0.4s ease-out;
+        }
+
+        .start-content { text-align: center; width: 100%; max-width: 500px; }
+
+        .start-logo { width: 80px; height: 80px; margin-bottom: 12px; }
+
+        .start-title { 
+            font-family: 'Roboto Slab', serif; 
+            font-size: 50px; font-weight: 700; 
+            margin: 0 0 12px;
+        }
+
+        .start-subtitle { 
+            font-family: 'Roboto Slab', sans-serif;
+            font-size: 38px; 
+            font-weight: 350;
+            margin: 0 0 36px; 
+        }
+
+        .play-btn { 
+            background: #000; color: #fff; border: none; 
+            border-radius: 30px; height: 48px; width: 150px;
+            font-size: 16px; font-weight: 700; 
+            cursor: pointer; transition: transform 0.1s;
+        }
+
+        .play-btn:active { transform: scale(0.96); }
+
+        .hidden { opacity: 0; pointer-events: none; }
     </style>
 </head>
 <body>
-
+    <div id="start-screen">
+        <div class="start-content">
+            <img src="wordle-icon.svg" class="start-logo">
+            <h1 class="start-title">Wordle</h1>
+            <p class="start-subtitle">Get 6 chances to guess a <span style="white-space:nowrap">5-letter</span> word.</p>
+            <button class="play-btn" onclick="dismissStartScreen()">Play</button>
+        </div>
+    </div>
     <header>
         <div class="header-controls">
             <button class="icon-btn" title="Restart" onclick="resetGame()">
@@ -454,6 +497,61 @@
     }
 
     initGame();
+
+    // 设置当前日期显示
+    function updateDate() {
+        const options = { month: 'long', day: 'numeric', year: 'numeric' };
+        const today = new Date().toLocaleDateString('en-US', options);
+        const dateEl = document.getElementById('current-date');
+        if (dateEl) dateEl.textContent = today;
+    }
+
+    // 关闭遮罩
+    function dismissStartScreen() {
+        const screen = document.getElementById('start-screen');
+        screen.classList.add('hidden');
+        // 遮罩消失后再移除 DOM，防止干扰点击
+        setTimeout(() => screen.style.display = 'none', 300);
+    }
+
+    // 修改原有的 handleInput，增加遮罩状态判断
+    const originalHandleInput = handleInput;
+    handleInput = function(key) {
+        const startScreen = document.getElementById('start-screen');
+        // 如果封面还在，不处理任何输入
+        if (startScreen && !startScreen.classList.contains('hidden')) return;
+        originalHandleInput(key);
+    };
+
+    // 在初始化时更新日期
+    updateDate();
+
+    // 更新日期并控制遮罩
+    function initStartScreen() {
+        const options = { month: 'long', day: 'numeric', year: 'numeric' };
+        const dateEl = document.getElementById('current-date');
+        if (dateEl) dateEl.textContent = new Date().toLocaleDateString('en-US', options);
+    }
+
+    function dismissStartScreen() {
+        const screen = document.getElementById('start-screen');
+        screen.classList.add('hidden');
+        setTimeout(() => screen.style.display = 'none', 300);
+    }
+
+    // 拦截键盘输入，防止在封面打开时可以玩游戏
+    const oldHandleInput = handleInput;
+    handleInput = function(key) {
+        const screen = document.getElementById('start-screen');
+        if (screen && !screen.classList.contains('hidden')) {
+            // 如果按了回车也可以开始游戏
+            if (key === "ENTER") dismissStartScreen();
+            return;
+        }
+        oldHandleInput(key);
+    };
+
+    initStartScreen();
 </script>
 </body>
 </html>
