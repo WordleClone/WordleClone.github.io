@@ -682,6 +682,7 @@
         let gameOverToast = null;
         let gameStatus = "playing";
         let hintsVisible = false;
+        let bounceTimeouts = []; // 用于追踪胜利跳动的计时器
 
         let constraints = {
             correct: Array(5).fill(null),
@@ -786,7 +787,10 @@
         function startNewRound() {
             if (gameOverToast) { gameOverToast.remove(); gameOverToast = null; }
 
-            // 根据当前模式从不同词池随机选词
+            // 清理跳动计时器和数组
+            bounceTimeouts.forEach(clearTimeout);
+            bounceTimeouts = [];
+
             const pool = (gameMode === "normal") ? answersPool : combinedPool;
             targetWord = pool[Math.floor(Math.random() * pool.length)];
             console.log(targetWord);
@@ -800,7 +804,8 @@
             document.querySelectorAll('.tile').forEach(tile => {
                 tile.textContent = "";
                 tile.removeAttribute("data-state");
-                tile.classList.remove("pop", "shake", "flip");
+                // 确保这里包含 "bounce"
+                tile.classList.remove("pop", "shake", "flip", "bounce");
             });
             document.querySelectorAll('.key').forEach(key => {
                 key.removeAttribute("data-state");
@@ -1055,26 +1060,38 @@
             // 修改 submitGuess 函数内部最后的 setTimeout 部分
             setTimeout(() => {
                 guessArr.forEach((char, i) => updateKey(char, states[i]));
-                isAnimating = false;
-                if (hintsVisible) updateHintList();
+
+                // 注意：这里不再立即执行 isAnimating = false;
 
                 if (guessString === targetWord) {
                     gameStatus = "won";
                     showToast(i18n[currentLang].praises[guesses.length - 1]);
 
-                    // --- 新增：胜利跳动逻辑 ---
-                    const startIdx = (guesses.length - 1) * 5; // 获取当前行的起始索引
+                    // 执行跳动逻辑
+                    const startIdx = (guesses.length - 1) * 5;
                     for (let i = 0; i < 5; i++) {
                         const tile = document.getElementById(`tile-${startIdx + i}`);
-                        // 使用 setTimeout 实现依次跳动的效果 (每个间隔 100ms)
-                        setTimeout(() => {
+                        const tId = setTimeout(() => {
                             tile.classList.add("bounce");
                         }, i * 100);
+                        bounceTimeouts.push(tId);
                     }
-                    // -----------------------
-                } else if (guesses.length === 6) {
-                    gameStatus = "lost";
-                    showToast(targetWord, true);
+
+                    // 【核心修复】胜利时，额外锁定 1500ms (400ms延迟 + 1000ms动画 + 100ms缓冲)
+                    // 只有跳完之后，isAnimating 才会变回 false，resetGame 才能继续
+                    setTimeout(() => {
+                        isAnimating = false;
+                        if (hintsVisible) updateHintList();
+                    }, 1500);
+
+                } else {
+                    // 如果没赢，在翻牌结束后立即解锁
+                    isAnimating = false;
+                    if (guesses.length === 6) {
+                        gameStatus = "lost";
+                        showToast(targetWord, true);
+                    }
+                    if (hintsVisible) updateHintList();
                 }
             }, 1700);
 
