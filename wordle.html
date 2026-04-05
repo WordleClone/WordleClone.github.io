@@ -965,6 +965,7 @@
 
         const i18n = {
             en: {
+                wordleTitle: "Standard Mode",
                 play: "Play",
                 subtitle: "Get 6 chances to guess a <span style='white-space:nowrap'>5-letter</span> word.",
                 newGame: "New Game Started",
@@ -991,6 +992,7 @@
                 ordinals: ["1st", "2nd", "3rd", "4th", "5th"]
             },
             zh: {
+                wordleTitle: "标准模式",
                 play: "开始游戏",
                 subtitle: "你有 6 次机会猜出一个 5 个字母的单词。",
                 newGame: "新游戏已开始",
@@ -1070,6 +1072,7 @@
             document.getElementById('hint-header').firstChild.textContent = t.possibleWords;
 
             // 更新选择框的值
+            document.querySelector('title').textContent = `Wordle - ${t.wordleTitle}`;
             document.getElementById('settings-title').textContent = t.settings;
             document.getElementById('label-hard-mode').textContent = t.hardMode;
             document.getElementById('desc-hard-mode').textContent = t.hardModeDesc;
