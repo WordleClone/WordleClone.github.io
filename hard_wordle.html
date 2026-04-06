@@ -17,12 +17,6 @@
     <script src="common.js"></script>
 
     <style>
-        :root {
-            /* 逻辑模式因为右边有 3 个计分块，所以 X 要推得更远 */
-            --clear-offset: 385px;
-            --clear-offset-mobile: 225px;
-        }
-
         .icon-btn svg {
             width: 24px;
             height: 24px;
@@ -686,7 +680,18 @@
                 confirmMode: "Switching modes will restart the game. Continue?",
                 possible: "Possible",
                 possibleWords: "Possible Words",
-                praises: ["Genius", "Magnificent", "Impressive", "Splendid", "Great", "Phew"],
+                praises: [
+                    "Genius",      // 第1次
+                    "Magnificent", // 第2次
+                    "Impressive",  // 第3次
+                    "Splendid",    // 第4次
+                    "Great",       // 第5次
+                    "Phew",        // 第6次
+                    "Strategic",   // 第7次
+                    "Methodical",  // 第8次
+                    "Persistent",  // 第9次
+                    "Clinical"     // 第10次
+                ],
                 cancel: "Cancel",
                 confirm: "Confirm",
                 settings: "SETTINGS",
@@ -713,7 +718,18 @@
                 confirmMode: "切换模式将重启游戏。是否继续？",
                 possible: "个可能",
                 possibleWords: "候选词汇",
-                praises: ["天才", "太棒了", "出色", "精彩", "不错", "险胜"],
+                praises: [
+                    "天才",   // 第1次
+                    "卓越",   // 第2次
+                    "惊人",   // 第3次
+                    "华丽",   // 第4次
+                    "优秀",   // 第5次
+                    "险胜",   // 第6次
+                    "严谨",   // 第7次
+                    "睿智",   // 第8次
+                    "毅力",   // 第9次
+                    "绝杀"    // 第10次
+                ],
                 cancel: "取消",
                 confirm: "确定",
                 settings: "设置",
