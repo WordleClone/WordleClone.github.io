@@ -13,6 +13,7 @@
     --tile-text: #ffffff;
     --header-border: #d3d6da;
     --tile-size: 62px;
+    --tool-shadow: rgba(0, 0, 0, 0.2);
 }
 
 body.dark-mode {
@@ -27,6 +28,7 @@ body.dark-mode {
     --key-bg: #818384;
     --key-text: #ffffff;
     --header-border: #3a3a3c;
+    --tool-shadow: rgba(255, 255, 255, 0.2);
 }
 
 body.high-contrast {
@@ -100,16 +102,22 @@ header {
 
 /* --- 通用组件 --- */
 .icon-btn {
+    height: 30px;
+    width: 30px;
     background: none;
     border: none;
     cursor: pointer;
-    padding: 8px;
     display: flex;
     align-items: center;
     border-radius: 4px;
     transition: background-color 0.2s;
     outline: none;
-    fill: var(--text);
+    color: var(--text);
+    justify-content: center;
+}
+
+.icon-btn i.fa-solid {
+    font-size: 16px;
 }
 
 .icon-btn:hover {
@@ -121,6 +129,72 @@ header {
     cursor: not-allowed;
 }
 
+/* --- 标记工具栏 --- */
+#marking-toolbox {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 15px;
+    padding: 10px;
+    border-radius: 10px;
+    justify-content: center;
+}
+
+.tool-btn {
+    width: 48px;
+    height: 48px;
+    font-size: 24px;
+    border: 2px solid transparent;
+    border-radius: 8px;
+    background: var(--bg);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    transition: all 0.2s;
+    color: var(--text);
+    box-shadow: 0 2px 5px var(--tool-shadow);
+}
+
+/* 图标颜色 */
+.icon-correct {
+    color: var(--green);
+}
+
+.icon-present {
+    color: var(--yellow);
+}
+
+.icon-absent {
+    color: var(--gray);
+}
+
+/* 激活状态：使用伪元素添加 Font Awesome 风格的勾选标志 */
+.tool-btn.active {
+    border-color: var(--text);
+    transform: translateY(-3px);
+}
+
+.tool-btn.active::after {
+    font-family: "Font Awesome 7 Free";
+    font-weight: 900;
+    content: "\f00c";
+    /* fa-check 的 Unicode */
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background: var(--green);
+    color: white;
+    width: 20px;
+    height: 20px;
+    font-size: 11px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
 /* 键盘 */
 .key {
     background-color: var(--key-bg);
@@ -128,19 +202,128 @@ header {
     border-radius: 4px;
     height: 58px;
     width: 43px;
+    /* 普通按键等宽 */
     display: flex;
     justify-content: center;
     align-items: center;
+    font-family: 'Libre Franklin', sans-serif;
     font-weight: 700;
     font-size: 20px;
     cursor: pointer;
     color: var(--key-text);
     text-transform: uppercase;
+    outline: none;
+    fill: var(--key-text);
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .key.wide {
     width: 65px;
+    /* 功能键等宽 */
     font-size: 12px;
+}
+
+.key[data-state="correct"] {
+    background-color: var(--green);
+    color: #ffffff;
+}
+
+.key[data-state="present"] {
+    background-color: var(--yellow);
+    color: #ffffff;
+}
+
+.key[data-state="absent"] {
+    background-color: var(--gray);
+    color: #ffffff;
+}
+
+/* 键盘按键标记样式 */
+.key[data-mark="correct"] {
+    background-color: var(--green) !important;
+    color: white;
+}
+
+.key[data-mark="present"] {
+    background-color: var(--yellow) !important;
+    color: white;
+}
+
+.key[data-mark="absent"] {
+    background-color: var(--gray) !important;
+    color: white;
+}
+
+.key svg {
+    width: 24px;
+    height: 24px;
+    pointer-events: none;
+}
+
+.tile {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    border: 2px solid var(--border-empty);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    box-sizing: border-box;
+    user-select: none;
+    backface-visibility: hidden;
+}
+
+.tile[data-state="filled"] {
+    border-color: var(--border-filled);
+}
+
+.tile[data-state="correct"] {
+    background-color: var(--green);
+    border-color: var(--green);
+    color: var(--tile-text);
+}
+
+.tile[data-state="present"] {
+    background-color: var(--yellow);
+    border-color: var(--yellow);
+    color: var(--tile-text);
+}
+
+.tile[data-state="absent"] {
+    background-color: var(--gray);
+    border-color: var(--gray);
+    color: var(--tile-text);
+}
+
+/* 游戏区方格标记样式 (作为背景色) */
+.tile[data-mark="correct"] {
+    background-color: var(--green) !important;
+    border-color: var(--green) !important;
+    color: white;
+}
+
+.tile[data-mark="present"] {
+    background-color: var(--yellow) !important;
+    border-color: var(--yellow) !important;
+    color: white;
+}
+
+.tile[data-mark="absent"] {
+    background-color: var(--gray) !important;
+    border-color: var(--gray) !important;
+    color: white;
+}
+
+.tiles-grid {
+    display: grid !important;
+    grid-template-columns: repeat(5, 1fr) !important;
+    gap: 5px;
+    width: 330px;
+    flex-shrink: 0;
+    /* 防止被挤压 */
 }
 
 /* 弹窗/模态框 */
