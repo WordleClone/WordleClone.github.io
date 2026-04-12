@@ -3,7 +3,7 @@ name: Bug 报告
 about: 创建一份报告以协助我们进行改进
 title: Bug 报告
 labels: bug
-assignees: ExploreMaths
+assignees: ''
 type: Bug
 
 ---
