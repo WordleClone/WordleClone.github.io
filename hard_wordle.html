@@ -419,14 +419,14 @@
     </div>
     <!-- Header 部分 -->
     <header>
-        <button class="icon-btn tooltip-bottom" id="back-btn" onclick="location.href='index.html'">
+        <button class="icon-btn" onclick="location.href='index.html'" title="Back">
             <i class="fa-solid fa-arrow-left"></i>
         </button>
         <div class="header-controls">
-            <button class="icon-btn tooltip-bottom" id="reset-btn" onclick="resetGame()">
+            <button class="icon-btn" id="reset-btn" title="Restart" onclick="resetGame()">
                 <i class="fa-solid fa-arrow-rotate-left"></i>
             </button>
-            <button class="icon-btn tooltip-bottom" id="mode-toggle-btn" onclick="toggleWordMode()">
+            <button class="icon-btn" id="mode-toggle-btn" title="Toggle Mode" onclick="toggleWordMode()">
                 <i id="mode-icon" class="fa-solid fa-star"></i>
             </button>
         </div>
@@ -435,7 +435,7 @@
         <p class="header-title">WordlePro</p>
 
         <div class="header-settings">
-            <button class="icon-btn tooltip-bottom" id="settings-btn" onclick="openSettings()">
+            <button class="icon-btn" onclick="openSettings()">
                 <i class="fa-solid fa-gear"></i>
             </button>
         </div>
@@ -508,28 +508,28 @@
             </div>
 
             <div id="marking-toolbox">
-                <button class="tool-btn tooltip-top" data-tool="correct" onclick="selectTool('correct')">
+                <button class="tool-btn" data-tool="correct" onclick="selectTool('correct')">
                     <i class="fa-solid fa-square icon-correct"></i>
                 </button>
-                <button class="tool-btn tooltip-top" data-tool="half" onclick="selectTool('half')">
+                <button class="tool-btn" data-tool="half" onclick="selectTool('half')">
                     <i class="fa-solid fa-square icon-half"></i>
                 </button>
-                <button class="tool-btn tooltip-top" data-tool="present" onclick="selectTool('present')">
+                <button class="tool-btn" data-tool="present" onclick="selectTool('present')">
                     <i class="fa-solid fa-square icon-present"></i>
                 </button>
-                <button class="tool-btn tooltip-top" data-tool="absent" onclick="selectTool('absent')">
+                <button class="tool-btn" data-tool="absent" onclick="selectTool('absent')">
                     <i class="fa-solid fa-square icon-absent"></i>
                 </button>
-                <button class="tool-btn tooltip-top" data-tool="erase" onclick="selectTool('erase')">
+                <button class="tool-btn" data-tool="erase" onclick="selectTool('erase')">
                     <i class="fa-solid fa-eraser"></i>
                 </button>
 
                 <div class="tool-divider"></div>
 
                 <!-- 逻辑快照工具 -->
-                <button class="tool-btn tooltip-top" id="save-btn" onclick="saveMarkings()"><i
+                <button class="tool-btn action-btn" title="保存逻辑快照" onclick="saveMarkings()"><i
                         class="fa-solid fa-bookmark"></i></button>
-                <button class="tool-btn tooltip-top" id="load-btn" onclick="loadMarkings()"><i
+                <button class="tool-btn action-btn" title="回退逻辑快照" onclick="loadMarkings()"><i
                         class="fa-solid fa-rotate-left"></i></button>
             </div>
     </div>
@@ -625,7 +625,7 @@
                 onlySubmitted: "Only submitted tiles can be marked",
                 tools: {
                     correct: "GREEN",
-                    half: "GREEN/YELLOW",
+                    half: "HALF (GREEN/YELLOW)",
                     present: "YELLOW",
                     absent: "GRAY",
                     erase: "ERASE",
@@ -635,14 +635,6 @@
                 noSave: "No saved state found",
                 confirmSave: "Save current markings as a snapshot?",
                 confirmLoad: "Restore markings from snapshot? Current unsaved marks will be lost.",
-                ttBack: "Back to Home",
-                ttRestart: "Restart Game",
-                ttMode: "Toggle Difficulty",
-                ttHints: "Show Hints",
-                ttSettings: "Settings",
-                ttClear: "Clear Line",
-                ttSave: "Save Snapshot",
-                ttLoad: "Restore Snapshot",
             },
             zh: {
                 wordleTitle: "逻辑模式",
@@ -696,14 +688,6 @@
                 noSave: "未找到存档记录",
                 confirmSave: "将当前标记保存到存档？",
                 confirmLoad: "从存档恢复标记？当前未存档的标记将丢失。",
-                ttBack: "返回首页",
-                ttRestart: "重新开始",
-                ttMode: "切换难度",
-                ttHints: "查看提示",
-                ttSettings: "设置",
-                ttClear: "清除整行",
-                ttSave: "保存逻辑存档",
-                ttLoad: "读取逻辑存档",
             },
         };
 
@@ -717,25 +701,6 @@
 
         function updateUILanguage() {
             const t = i18n[currentLang];
-
-            // Header 按钮
-            document.getElementById('back-btn').setAttribute('data-tooltip', t.ttBack);
-            document.getElementById('reset-btn').setAttribute('data-tooltip', t.ttRestart);
-            document.getElementById('settings-btn').setAttribute('data-tooltip', t.ttSettings);
-            document.getElementById('mode-toggle-btn').setAttribute('data-tooltip', t.ttMode);
-
-            // 标记工具按钮
-            document.querySelectorAll('.tool-btn').forEach(btn => {
-                const tool = btn.dataset.tool;
-                if (tool) {
-                    btn.setAttribute('data-tooltip', t.tools[tool]); // 使用你已有的 tools 翻译
-                }
-            });
-
-            // 存档读档按钮
-            const saveBtn = document.getElementById('save-btn').setAttribute('data-tooltip', t.ttSave);
-            const loadBtn = document.getElementById('load-btn').setAttribute('data-tooltip', t.ttLoad);
-
             // 更新起始页
             const playBtn = document.querySelector('.play-btn');
             if (playBtn) playBtn.textContent = t.play;
