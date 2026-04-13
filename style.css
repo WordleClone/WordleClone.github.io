@@ -169,6 +169,14 @@ header {
     color: var(--gray);
 }
 
+/* 工具栏图标颜色微调 */
+.icon-half {
+    background: linear-gradient(45deg, var(--yellow) 50%, var(--green) 50%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    display: inline-block;
+}
+
 /* 激活状态：使用伪元素添加 Font Awesome 风格的勾选标志 */
 .tool-btn.active {
     border-color: var(--text);
@@ -192,7 +200,7 @@ header {
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 2px 4px var(--tool-shadow);
 }
 
 /* 键盘 */
@@ -255,6 +263,12 @@ header {
     color: white;
 }
 
+.key[data-mark="half"] {
+    background: linear-gradient(45deg, var(--yellow) 50%, var(--green) 50%) !important;
+    border: none !important;
+    color: white !important;
+}
+
 .key svg {
     width: 24px;
     height: 24px;
@@ -315,6 +329,12 @@ header {
     background-color: var(--gray) !important;
     border-color: var(--gray) !important;
     color: white;
+}
+
+.tile[data-mark="half"] {
+    background: linear-gradient(45deg, var(--yellow) 50%, var(--green) 50%) !important;
+    border: none !important;
+    color: white !important;
 }
 
 .tiles-grid {

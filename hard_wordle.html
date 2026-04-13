@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Wordle</title>
+    <title>WordlePro</title>
     <link rel="icon" type="image/png" href="wordle_logo_32x32.png">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@7.2.0/css/all.min.css">
 
@@ -412,7 +412,7 @@
     <div id="start-screen">
         <div class="start-content">
             <img src="wordle-icon.svg" class="start-logo">
-            <h1 class="start-title">Wordle</h1>
+            <h1 class="start-title">WordlePro</h1>
             <p class="start-subtitle">Loading...</p>
             <button class="play-btn" onclick="dismissStartScreen()">Play</button>
         </div>
@@ -432,7 +432,7 @@
         </div>
 
         <img src="wordle-icon.svg" class="header-logo" alt="Logo">
-        <p class="header-title">Wordle</p>
+        <p class="header-title">WordlePro</p>
 
         <div class="header-settings">
             <button class="icon-btn" onclick="openSettings()">
@@ -510,6 +510,9 @@
             <div id="marking-toolbox">
                 <button class="tool-btn" data-tool="correct" onclick="selectTool('correct')">
                     <i class="fa-solid fa-square icon-correct"></i>
+                </button>
+                <button class="tool-btn" data-tool="half" onclick="selectTool('half')">
+                    <i class="fa-solid fa-square icon-half"></i>
                 </button>
                 <button class="tool-btn" data-tool="present" onclick="selectTool('present')">
                     <i class="fa-solid fa-square icon-present"></i>
@@ -612,9 +615,10 @@
                 onlySubmitted: "Only submitted tiles can be marked",
                 tools: {
                     correct: "GREEN",
+                    half: "HALF (GREEN/YELLOW)",
                     present: "YELLOW",
                     absent: "GRAY",
-                    erase: "ERASE"
+                    erase: "ERASE",
                 },
             },
             zh: {
@@ -659,6 +663,7 @@
                 onlySubmitted: "只能标记已提交的方格",
                 tools: {
                     correct: "绿色",
+                    half: "绿色/黄色",
                     present: "黄色",
                     absent: "灰色",
                     erase: "擦除"
@@ -688,7 +693,7 @@
             document.getElementById('hint-header').firstChild.textContent = t.possibleWords;
 
             // 更新选择框的值
-            document.querySelector('title').textContent = `Wordle - ${t.wordleTitle}`;
+            document.querySelector('title').textContent = `WordlePro - ${t.wordleTitle}`;
             document.getElementById('settings-title').textContent = t.settings;
             document.getElementById('label-dark-mode').textContent = t.darkMode;
             document.getElementById('label-high-contrast').textContent = t.highContrast;
@@ -997,10 +1002,13 @@
         });
 
         function selectTool(tool) {
+            // 核心修复：获取当前被点击的按钮并强制失焦
+            const clickedBtn = document.querySelector(`.tool-btn[data-tool="${tool}"]`);
+            if (clickedBtn) clickedBtn.blur();
+
             const btns = document.querySelectorAll('.tool-btn');
             const t = i18n[currentLang];
 
-            // 如果点击已选中的工具，则退出标记模式
             if (activeMarkingTool === tool) {
                 activeMarkingTool = null;
                 btns.forEach(b => b.classList.remove('active'));
@@ -1010,8 +1018,20 @@
                 btns.forEach(b => {
                     b.classList.toggle('active', b.dataset.tool === tool);
                 });
-                const toolNames = { correct: "GREEN", present: "YELLOW", absent: "GRAY", erase: "ERASE" };
-                showToast(t.markingMode + t.tools[tool]);
+
+                const toolNames = {
+                    correct: t.tools.correct,
+                    present: t.tools.present,
+                    absent: t.tools.absent,
+                    half: t.tools.half,
+                    erase: t.tools.erase
+                };
+                showToast(t.markingMode + toolNames[tool]);
+            }
+
+            // 双重保险：确保页面上没有任何元素处于聚焦状态
+            if (document.activeElement) {
+                document.activeElement.blur();
             }
         }
 
