@@ -305,17 +305,17 @@
     </div>
     <!-- Header 部分 -->
     <header>
-        <button class="icon-btn" onclick="location.href='index.html'" title="Back">
+        <button class="icon-btn tooltip-bottom" id="back-btn" onclick="location.href='index.html'">
             <i class="fa-solid fa-arrow-left"></i>
         </button>
         <div class="header-controls">
-            <button class="icon-btn" id="reset-btn" title="Restart" onclick="resetGame()">
+            <button class="icon-btn tooltip-bottom" id="reset-btn" onclick="resetGame()">
                 <i class="fa-solid fa-arrow-rotate-left"></i>
             </button>
-            <button class="icon-btn" id="mode-toggle-btn" title="Toggle Mode" onclick="toggleWordMode()">
+            <button class="icon-btn tooltip-bottom" id="mode-toggle-btn" onclick="toggleWordMode()">
                 <i id="mode-icon" class="fa-solid fa-star"></i>
             </button>
-            <button class="icon-btn" title="Hints" onclick="toggleHints()">
+            <button class="icon-btn tooltip-bottom" id="hints-btn" onclick="toggleHints()">
                 <i class="fa-solid fa-lightbulb"></i>
             </button>
         </div>
@@ -324,7 +324,7 @@
         <p class="header-title">WordlePro</p>
 
         <div class="header-settings">
-            <button class="icon-btn" onclick="openSettings()">
+            <button class="icon-btn tooltip-bottom" id="settings-btn" onclick="openSettings()">
                 <i class="fa-solid fa-gear"></i>
             </button>
         </div>
@@ -480,7 +480,13 @@
                 language: "Language",
                 hardModeGreen: "Hard Mode: {pos} letter must be {char}",
                 hardModeYellow: "Hard Mode: Must contain {char}",
-                ordinals: ["1st", "2nd", "3rd", "4th", "5th"]
+                ordinals: ["1st", "2nd", "3rd", "4th", "5th"],
+                ttBack: "Back to Home",
+                ttRestart: "Restart Game",
+                ttMode: "Toggle Difficulty",
+                ttHints: "Show Hints",
+                ttSettings: "Settings",
+                ttClear: "Clear Line",
             },
             zh: {
                 wordleTitle: "标准模式",
@@ -506,7 +512,13 @@
                 language: "语言",
                 hardModeGreen: "困难模式：第 {pos} 个字母必须是 {char}",
                 hardModeYellow: "困难模式：必须包含 {char}",
-                ordinals: ["1", "2", "3", "4", "5"] // 中文直接用数字
+                ordinals: ["1", "2", "3", "4", "5"], // 中文直接用数字
+                ttBack: "返回首页",
+                ttRestart: "重新开始",
+                ttMode: "切换难度",
+                ttHints: "查看提示",
+                ttSettings: "设置",
+                ttClear: "清除整行"
             }
         };
 
@@ -530,6 +542,17 @@
 
         function updateUILanguage() {
             const t = i18n[currentLang];
+
+            // 注入 Tooltip 文字
+            document.getElementById('back-btn').setAttribute('data-tooltip', t.ttBack);
+            document.getElementById('reset-btn').setAttribute('data-tooltip', t.ttRestart);
+            document.getElementById('hints-btn').setAttribute('data-tooltip', t.ttHints);
+            document.getElementById('settings-btn').setAttribute('data-tooltip', t.ttSettings);
+            document.getElementById('mode-toggle-btn').setAttribute('data-tooltip', t.ttMode);
+
+            // 动态生成的按钮（如清除按钮）在生成时处理，或者这里批量处理：
+            document.querySelectorAll('.clear-row-btn').forEach(btn => btn.setAttribute('data-tooltip', t.ttClear));
+
             // 更新起始页
             const playBtn = document.querySelector('.play-btn');
             if (playBtn) playBtn.textContent = t.play;
